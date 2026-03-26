@@ -1,0 +1,48 @@
+# laravel-cloud.yaml
+name: plateforme-dons
+
+environments:
+  production:
+    variables:
+      APP_ENV: production
+      APP_DEBUG: false
+      APP_KEY: ${APP_KEY}
+      APP_URL: https://${PROJECT_NAME}.laravel.cloud
+      SESSION_DOMAIN: .${PROJECT_NAME}.laravel.cloud
+      SANCTUM_STATEFUL_DOMAINS: ${PROJECT_NAME}.laravel.cloud
+
+services:
+  web:
+    build:
+      - composer install --no-dev --optimize-autoloader
+      - npm install
+      - npm run build
+    commands:
+      start: php artisan serve --host=0.0.0.0 --port=${PORT}
+      post_deploy:
+        - php artisan migrate --force
+        - php artisan storage:link
+        - php artisan optimize:clear
+        - php artisan config:cache
+        - php artisan route:cache
+        - php artisan view:cache
+    health_check:
+      path: /up
+      interval: 30
+      timeout: 10
+      retries: 3
+
+databases:
+  mysql:
+    name: database
+    version: 8.0
+    size: micro
+
+cache:
+  redis:
+    version: 7.0
+    size: micro
+
+storage:
+  disk: local
+  public_disk: public

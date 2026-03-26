@@ -1,0 +1,30 @@
+# cloud.yaml
+name: plateforme-dons
+
+services:
+  web:
+    build:
+      - composer install --no-dev --optimize-autoloader
+      - npm install
+      - npm run build
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - LOG_CHANNEL=stack
+    commands:
+      start: php artisan serve --host=0.0.0.0 --port=${PORT}
+      migrate: php artisan migrate --force
+      seed: php artisan db:seed --force
+      optimize: php artisan optimize
+
+databases:
+  mysql:
+    name: database
+    version: 8.0
+
+cache:
+  redis:
+    version: 7.0
+
+storage:
+  disk: s3
