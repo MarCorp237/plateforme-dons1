@@ -9,8 +9,7 @@
         "inertiajs/inertia-laravel": "^0.6.0",
         "laravel/framework": "^10.0",
         "laravel/sanctum": "^3.0",
-        "laravel/tinker": "^2.8",
-        "tightenco/ziggy": "^1.0"
+        "laravel/tinker": "^2.8"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
@@ -40,18 +39,7 @@
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
-        ],
-        "post-root-package-install": [
-            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
-        ],
-        "post-create-project-cmd": [
-            "@php artisan key:generate --ansi"
         ]
-    },
-    "extra": {
-        "laravel": {
-            "dont-discover": []
-        }
     },
     "config": {
         "optimize-autoloader": true,
@@ -60,9 +48,6 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
-        },
-        "audit": {
-            "block-insecure": false
         }
     },
     "minimum-stability": "stable",

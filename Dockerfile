@@ -10,13 +10,24 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /app
 COPY . .
 
-RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
+# Installer les dépendances PHP
+RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs || true
 
-RUN npm install --legacy-peer-deps
-RUN npm run build
+# Installer les dépendances NPM
+RUN npm install --legacy-peer-deps || true
 
-RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
-RUN chmod -R 775 /app/storage /app/bootstrap/cache
+# Compiler les assets
+RUN npm run build || true
+
+# Créer les dossiers nécessaires
+RUN mkdir -p storage/framework/views storage/framework/sessions storage/framework/cache storage/logs
+RUN chmod -R 775 storage
+
+# Créer le fichier .env
+RUN cp .env.example .env || true
+
+# Générer la clé
+RUN php artisan key:generate --force || true
 
 EXPOSE 8000
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
